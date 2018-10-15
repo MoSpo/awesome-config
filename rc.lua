@@ -154,7 +154,7 @@ local tasklist_buttons = gears.table.join(
                                                   -- This will also un-minimize
                                                   -- the client, if needed
                                                   client.focus = c
-                                                  c:raise()
+                                                    c:raise()
                                               end
                                           end),
                      awful.button({ }, 3, client_menu_toggle_fn()),
@@ -318,6 +318,18 @@ globalkeys = gears.table.join(
               {description = "view next", group = "tag"}),
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore,
               {description = "go back", group = "tag"}),
+
+    awful.key({ modkey,           }, "g", function ()
+        local scr = awful.screen.focused()
+        if scr.selected_tag.gap > 0 then
+            scr.selected_tag.gap = 0
+        else 
+            scr.selected_tag.gap = 15
+        end
+        awful.layout.arrange(scr)
+    end,
+    {description = "toggle gaps", group = "awesome"}),
+    
 
     awful.key({ modkey,           }, "j",
         function ()
@@ -605,8 +617,9 @@ for i = 1, 9 do
 end
 
 clientbuttons = gears.table.join(
-    awful.button({ }, 1, function (c) client.focus = c;
-        if not(c.class == "plasmashell" and c.type == "dock") then
+    awful.button({ }, 1, function (c) 
+        if not(c.class == "plasmashell") then
+            client.focus = c;
             c:raise()
         end
     end),
@@ -639,8 +652,8 @@ awful.rules.rules = {
     rule = { class = "plasmashell" },
     properties = { floating = true },
     callback = function(c)
-       if c.type ~= "menu" then
-       c:geometry( { width = 300, height = 300 } )
+       if c.type == "desktop" then
+            c.fullscreen = true
        end
     end,
     },
@@ -733,7 +746,7 @@ client.connect_signal("manage", function (c)
 	awful.placement.top(c)
 	awful.placement.no_offscreen(c)
     end
-    if not(c.type == "dock" or c.class == "ksmserver") then 
+    if not(c.type == "dock" or c.type == "desktop" or c.class == "ksmserver") then 
         c.shape = function(cr,w,h) gears.shape.rounded_rect(cr,w,h,15) end
     end
     c.ignore_border_width = false
@@ -831,7 +844,7 @@ client.connect_signal("button::press", function(c)
             (my > g.y and my < g.y + 10) or
             (my > g.y + g.height -10 and my < g.y + g.height)) then
                 awful.mouse.client.resize(c)
-        end
+        end                                    
 end)
 
 client.connect_signal("focus", function(c)
@@ -853,9 +866,10 @@ client.connect_signal("focus", function(c)
         c.border_color = "#F67400"
     elseif c.ontop and (not (c.class == "plasmashell" or c.class == "krunner")) then
         c.border_color = "#EC3636"
-    elseif c.type ~= "dock" then
+    elseif c.type ~= "dock" and c.type ~= "desktop" then
         c.border_color = beautiful.border_focus
     end
+                                          
 end)
 
 client.connect_signal("unfocus", function(c) 
