@@ -1,0 +1,18 @@
+awesome:
+shortcuts:-
+win+g - remove all gaps
+win+w - hotkey window
+
+toggle mouse snap focus to click to focus (i.e. sticky focus)
+
+fix minimise focus problem
+
+make win shift hjkl for floating move the window
+
+animate addition of titlebar on floating
+animate gap addition and removal
+animate boarder colour change (even from blue to yellow)
+
+make home button work with floating windows as well
+
+make hot corner in the bottom right to minimise all windows
